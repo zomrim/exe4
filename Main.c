@@ -112,9 +112,6 @@ void factorGivenCourse(char** const* students, const int* coursesPerStudent, int
 {
 	if (factor < 20 || factor > -20)
 		return;
-
-	while (students
-
 }
 
 void printStudentArray(const char* const* const* students, const int* coursesPerStudent, int numberOfStudents)
