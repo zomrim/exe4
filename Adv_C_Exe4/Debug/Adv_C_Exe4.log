@@ -1,0 +1,11 @@
+﻿  Main.c
+C:\Users\Omrih\source\repos\Adv_C_Exe4\Adv_C_Exe4\Main.c(42,63): warning C4047: 'function': 'int **' differs in levels of indirection from 'int (*)[9]'
+C:\Users\Omrih\source\repos\Adv_C_Exe4\Adv_C_Exe4\Main.c(42,45): warning C4024: 'countStudentsAndCourses': different types for formal and actual parameter 2
+C:\Users\Omrih\source\repos\Adv_C_Exe4\Adv_C_Exe4\Main.c(43,83): warning C4047: 'function': 'int **' differs in levels of indirection from 'int (*)[9]'
+C:\Users\Omrih\source\repos\Adv_C_Exe4\Adv_C_Exe4\Main.c(43,65): warning C4024: 'makeStudentArrayFromFile': different types for formal and actual parameter 2
+C:\Users\Omrih\source\repos\Adv_C_Exe4\Adv_C_Exe4\Main.c(82,27): warning C4047: '=': 'int *' differs in levels of indirection from 'int'
+C:\Users\Omrih\source\repos\Adv_C_Exe4\Adv_C_Exe4\Main.c(95,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Omrih\source\repos\Adv_C_Exe4\Adv_C_Exe4\Main.c(109): warning C4716: 'makeStudentArrayFromFile': must return a value
+C:\Users\Omrih\source\repos\Adv_C_Exe4\Adv_C_Exe4\Main.c(143): warning C4716: 'readFromBinFile': must return a value
+C:\Users\Omrih\source\repos\Adv_C_Exe4\Adv_C_Exe4\Main.c(148): warning C4716: 'transformStudentArray': must return a value
+  Adv_C_Exe4.vcxproj -> C:\Users\Omrih\source\repos\Adv_C_Exe4\Debug\Adv_C_Exe4.exe
