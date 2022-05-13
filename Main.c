@@ -28,6 +28,7 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 void printStudentArray(const char* const* const* students, const int* coursesPerStudent, int numberOfStudents);
 void factorGivenCourse(char** const* students, const int* coursesPerStudent, int numberOfStudents, const char* courseName, int factor);
 void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStudents);
+void countTavs(char* buffer, int** sizes);
 
 //Part B
 Student* transformStudentArray(char*** students, const int* coursesPerStudent, int numberOfStudents);
@@ -39,7 +40,7 @@ int main()
 	//Part A
 	int coursesPerStudent[9] = { 0 };
 	int numberOfStudents = 0;
-	countStudentsAndCourses("studentList.txt", &coursesPerStudent, &numberOfStudents);
+	//countStudentsAndCourses("studentList.txt", &coursesPerStudent, &numberOfStudents);
 	char*** students = makeStudentArrayFromFile("studentList.txt", &coursesPerStudent, &numberOfStudents);
 	factorGivenCourse(students, coursesPerStudent, numberOfStudents, "Advanced Topics in C", +5);
 	printStudentArray(students, coursesPerStudent, numberOfStudents);
@@ -82,7 +83,6 @@ void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int*
 		*coursesPerStudent = res;
 		coursesPerStudent++;
 	}
-
 	fclose(fin);
 }
 
@@ -105,13 +105,52 @@ int countPipes(const char* lineBuffer, int maxCount)
 
 char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, int* numberOfStudents)
 {
-	//add code here
+	countStudentsAndCourses(fileName, coursesPerStudent, numberOfStudents);
+	char*** students = (char***)malloc(sizeof(char**) * (*numberOfStudents));
+	if (!students) { exit(1); }
+	for (int i = 0; i < (*numberOfStudents); i++)
+	{
+		int iter = (**coursesPerStudent) * 2 + 1;
+		char** student = (char**)malloc(sizeof(char*) * iter);
+		if (!student) { exit(1); }
+		students[i] = student;
+		for (int i = 0; i < iter; i++)
+		{
+			int** sizes = (int**)malloc(sizeof(int*) * iter);
+			if (!sizes) { exit(1); }
+			countTavs(fileName, sizes);
+			char* subject = (char*)malloc(sizeof(char) * (**sizes));
+			if (!subject) { exit(1); }
+			student[i] = subject;
+			sizes++;
+		}
+		*coursesPerStudent++;
+	}
+	return students;
 }
 
 void factorGivenCourse(char** const* students, const int* coursesPerStudent, int numberOfStudents, const char* courseName, int factor)
 {
-	if (factor < 20 || factor > -20)
+	if (factor > 20 || factor < -20)
 		return;
+
+	for (int i = 0; i < numberOfStudents; i++)
+	{
+		for (int i = 0; i < (*coursesPerStudent) * 2 + 1 ; i++)
+		{
+			if (**students == courseName)
+			{
+				*students++;
+				int grade = atoi(**students);
+				grade += factor;
+				_itoa(grade, **students, 10);
+
+			}
+			*students++;
+		}
+		coursesPerStudent++;
+		students++;
+	}
 }
 
 void printStudentArray(const char* const* const* students, const int* coursesPerStudent, int numberOfStudents)
@@ -130,7 +169,31 @@ void printStudentArray(const char* const* const* students, const int* coursesPer
 
 void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStudents)
 {
-	//add code here
+	FILE* fin = fopen("studentList.txt", "w");
+
+	for (int i = 0; i < numberOfStudents; i++)
+	{
+		fputs(**students, fin);
+		for (int i = 0; i < *coursesPerStudent; i++)
+		{
+			*students++;
+			fputc('|', fin);
+			fputs(**students, fin);
+			*students++;
+			fputc(',', fin);
+			fputs(**students, fin);
+		}
+		*students++;
+		students++;
+		coursesPerStudent++;
+		fputc('\n', fin);
+	}
+	free(**students);
+	free(*students);
+	free(students);
+	free(coursesPerStudent);
+	
+	fclose(fin);
 }
 
 void writeToBinFile(const char* fileName, Student* students, int numberOfStudents)
@@ -146,4 +209,18 @@ Student* readFromBinFile(const char* fileName)
 Student* transformStudentArray(char*** students, const int* coursesPerStudent, int numberOfStudents)
 {
 	//add code here
+}
+
+void countTavs(char* buffer, int** sizes)
+{
+	int counter = 0;
+	while (*buffer != '\n' || *buffer != '\0')
+	{
+		while (*buffer != '|' && *buffer != ',')
+		{
+			counter++;
+		}
+		**sizes = counter;
+		sizes++;
+	}
 }
