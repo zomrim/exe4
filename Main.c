@@ -28,7 +28,7 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 void printStudentArray(const char* const* const* students, const int* coursesPerStudent, int numberOfStudents);
 void factorGivenCourse(char** const* students, const int* coursesPerStudent, int numberOfStudents, const char* courseName, int factor);
 void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStudents);
-void countTavs(char* buffer, int** sizes);
+int* countRowTavs(char* fileName, int arr_size);
 
 //Part B
 Student* transformStudentArray(char*** students, const int* coursesPerStudent, int numberOfStudents);
@@ -38,14 +38,14 @@ Student* readFromBinFile(const char* fileName);
 int main()
 {
 	//Part A
-	int coursesPerStudent[9] = { 0 };
+	int* coursesPerStudent = NULL;
 	int numberOfStudents = 0;
 	//countStudentsAndCourses("studentList.txt", &coursesPerStudent, &numberOfStudents);
 	char*** students = makeStudentArrayFromFile("studentList.txt", &coursesPerStudent, &numberOfStudents);
 	factorGivenCourse(students, coursesPerStudent, numberOfStudents, "Advanced Topics in C", +5);
 	printStudentArray(students, coursesPerStudent, numberOfStudents);
 	//studentsToFile(students, coursesPerStudent, numberOfStudents); //this frees all memory. Part B fails if this line runs. uncomment for testing (and comment out Part B)
-	
+
 	//Part B
 	Student* transformedStudents = transformStudentArray(students, coursesPerStudent, numberOfStudents);
 	writeToBinFile("students.bin", transformedStudents, numberOfStudents);
@@ -64,7 +64,6 @@ void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int*
 {
 	FILE* fin =	fopen(fileName, "r");
 	int student_cnt = 1;
-	int** courses = coursesPerStudent;
 	rewind(fin);
 	while (feof(fin) == 0)
 	{
@@ -72,17 +71,19 @@ void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int*
 			student_cnt++;
 	}
 	*numberOfStudents = student_cnt;
-
+	
+	int* courses = (int*)malloc(sizeof(int) * student_cnt);
+	if (!courses) { exit(1); }
 	rewind(fin);
-
 	int i = 0;
 	while (feof(fin) == 0)
 	{
 		char str[1023];
 		int res = countPipes (fgets(str, 1023, fin),1023);
-		*coursesPerStudent = res;
-		coursesPerStudent++;
+		courses[i] = res;
+		i++;
 	}
+	*coursesPerStudent = courses;
 	fclose(fin);
 }
 
@@ -105,6 +106,7 @@ int countPipes(const char* lineBuffer, int maxCount)
 
 char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, int* numberOfStudents)
 {
+	FILE* fin = fopen(fileName, "r");
 	countStudentsAndCourses(fileName, coursesPerStudent, numberOfStudents);
 	char*** students = (char***)malloc(sizeof(char**) * (*numberOfStudents));
 	if (!students) { exit(1); }
@@ -113,18 +115,28 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 		int iter = (**coursesPerStudent) * 2 + 1;
 		char** student = (char**)malloc(sizeof(char*) * iter);
 		if (!student) { exit(1); }
-		students[i] = student;
+		*students = student;
+		int* sizes = countRowTavs(fileName, iter);
+		char* name = (char*)malloc(sizeof(char) * (sizes[0]));
+		if (!name) { exit(1); }
+		*student = name;
+		rewind(fin);
+		fgets(name, sizes[0], fin);
+		student++;
+		sizes++;
+		fseek(fin, 1, SEEK_CUR);
 		for (int i = 0; i < iter; i++)
 		{
-			int** sizes = (int**)malloc(sizeof(int*) * iter);
-			if (!sizes) { exit(1); }
-			countTavs(fileName, sizes);
-			char* subject = (char*)malloc(sizeof(char) * (**sizes));
-			if (!subject) { exit(1); }
-			student[i] = subject;
+			char* data = (char*)malloc(sizeof(char) * (sizes[i]));
+			if (!data) { exit(1); }
+			*student = data;
+			fgets(data, sizes[i], fin);
+			student++;
 			sizes++;
+			fseek(fin, 1, SEEK_CUR);
 		}
-		*coursesPerStudent++;
+		students++;
+		coursesPerStudent++;
 	}
 	return students;
 }
@@ -140,11 +152,10 @@ void factorGivenCourse(char** const* students, const int* coursesPerStudent, int
 		{
 			if (**students == courseName)
 			{
-				*students++;
+				**students++;
 				int grade = atoi(**students);
 				grade += factor;
 				_itoa(grade, **students, 10);
-
 			}
 			*students++;
 		}
@@ -183,7 +194,6 @@ void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStuden
 			fputc(',', fin);
 			fputs(**students, fin);
 		}
-		*students++;
 		students++;
 		coursesPerStudent++;
 		fputc('\n', fin);
@@ -208,19 +218,54 @@ Student* readFromBinFile(const char* fileName)
 
 Student* transformStudentArray(char*** students, const int* coursesPerStudent, int numberOfStudents)
 {
-	//add code here
-}
-
-void countTavs(char* buffer, int** sizes)
-{
-	int counter = 0;
-	while (*buffer != '\n' || *buffer != '\0')
+	Student* students_structs = (Student*)malloc(sizeof(Student) * numberOfStudents);
+	if (!students_structs) { exit(1); }
+	for (int i = 0; i < numberOfStudents; i++)
 	{
-		while (*buffer != '|' && *buffer != ',')
+		Student s;
+		strcpy(s.name, **students);
+		*students++;
+		s.numberOfCourses = *coursesPerStudent;
+		StudentCourseGrade* courses = (StudentCourseGrade*)malloc(sizeof(StudentCourseGrade) * (*coursesPerStudent));
+		for (int i = 0; i < *coursesPerStudent; i++)
 		{
-			counter++;
+			StudentCourseGrade course;
+			strcpy(course.courseName, **students);
+			*students++;
+			course.grade = atoi(**students);
+			*students++;
+			courses[i] = course;
 		}
-		**sizes = counter;
-		sizes++;
+		coursesPerStudent++;
+		students++;
 	}
 }
+
+int* countRowTavs(char* fileName, int arr_size)
+{
+	int* sizes = (int*)malloc(sizeof(int) * arr_size);
+	FILE* fin = fopen(fileName, "r");
+	int counter = 0;
+	char line[1023];
+	fgets(line, 1023, fin);
+	char* ptr = line;
+	int i = 0;
+	while (*ptr != '\0') 
+	{
+		while (*ptr != '|' && *ptr != ',')
+		{
+			if (*ptr == '\n')
+				break;
+			counter++;
+			ptr++;
+		}
+		sizes[i] = counter + 1;
+		ptr++;
+		i++;
+		counter = 0;
+	}
+	fclose(fin);
+	return sizes;
+	}
+	
+

@@ -1,8 +1,5 @@
 ﻿  Main.c
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(44,83): warning C4047: 'function': 'int **' differs in levels of indirection from 'int (*)[9]'
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(44,65): warning C4024: 'makeStudentArrayFromFile': different types for formal and actual parameter 2
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(83,27): warning C4047: '=': 'int *' differs in levels of indirection from 'int'
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(121,22): warning C4090: 'function': different 'const' qualifiers
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(207): warning C4716: 'readFromBinFile': must return a value
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(212): warning C4716: 'transformStudentArray': must return a value
+C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(119,37): warning C4090: 'function': different 'const' qualifiers
+C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(217): warning C4716: 'readFromBinFile': must return a value
+C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(242): warning C4715: 'transformStudentArray': not all control paths return a value
   Adv_C_Exe4.vcxproj -> C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Debug\Adv_C_Exe4.exe
