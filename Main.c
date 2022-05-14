@@ -40,7 +40,6 @@ int main()
 	//Part A
 	int* coursesPerStudent = NULL;
 	int numberOfStudents = 0;
-	//countStudentsAndCourses("studentList.txt", &coursesPerStudent, &numberOfStudents);
 	char*** students = makeStudentArrayFromFile("studentList.txt", &coursesPerStudent, &numberOfStudents);
 	factorGivenCourse(students, coursesPerStudent, numberOfStudents, "Advanced Topics in C", +5);
 	printStudentArray(students, coursesPerStudent, numberOfStudents);
@@ -128,9 +127,9 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 		if (!name) { exit(1); }
 		*studentPtr = name;
 		studentPtr++;
-		char* buffer = strtok(line, "|,");
+		char* buffer = strtok(line, "|,\n");
 		strcpy(name,buffer);
-		buffer = strtok(NULL, "|,");
+		buffer = strtok(NULL, "|,\n");
 		sizesPtr++;
 		for (int j = 0; j < (*coursesPtr) * 2; j++)
 		{
@@ -138,7 +137,7 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 			if (!data) { exit(1); }
 			*studentPtr = data;
 			strcpy(data, buffer);
-			buffer = strtok(NULL, "|,");
+			buffer = strtok(NULL, "|,\n");
 			studentPtr++;
 			sizesPtr++;
 		}
@@ -146,6 +145,7 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 		studentsPtr++;
 	}
 	return students;
+	fclose(fin);
 }
 
 void factorGivenCourse(char** const* students, const int* coursesPerStudent, int numberOfStudents, const char* courseName, int factor)
@@ -153,18 +153,23 @@ void factorGivenCourse(char** const* students, const int* coursesPerStudent, int
 	if (factor > 20 || factor < -20)
 		return;
 
+	int* coursesperStudentPtr = coursesPerStudent;
 	for (int i = 0; i < numberOfStudents; i++)
 	{
-		for (int i = 0; i < (*coursesPerStudent) * 2 + 1; i++)
+		char** dataPtr = *students;
+		for (int j = 0; j < (*coursesPerStudent) * 2 + 1; j++)
 		{
-			if (**students == courseName)
+			if (strcmp(*dataPtr,courseName) == 0)
 			{
-				**students++;
-				int grade = atoi(**students);
+				dataPtr++;
+				int grade = atoi(*dataPtr);
 				grade += factor;
-				_itoa(grade, **students, 10);
-			}
-			*students++;
+				if (grade >= 100)
+					grade = 100;
+				if (grade <= 0)
+					grade = 0;
+				_itoa(grade, *dataPtr, 10);
+			} else dataPtr++;
 		}
 		coursesPerStudent++;
 		students++;
@@ -257,7 +262,7 @@ int* countRowTavs(char* buffer, int arr_size)
 	int i = 0;
 	while (*ptrline != '\0')
 	{
-		while (*ptrline != '|' && *ptrline != ',')
+		while (*ptrline != '|' && *ptrline != ',' && *ptrline != '\0')
 		{
 			if (*ptrline == '\n')
 				break;

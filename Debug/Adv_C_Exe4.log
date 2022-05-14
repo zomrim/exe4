@@ -1,8 +1,1 @@
-﻿  Main.c
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(84,20): warning C4047: '=': 'int *' differs in levels of indirection from 'int'
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(77,1): warning C4047: 'initializing': 'int **' differs in levels of indirection from 'int *'
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(122,25): warning C4133: '=': incompatible types - from 'char **' to 'int **'
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(115,1): warning C4133: 'initializing': incompatible types - from 'char ***' to 'int ***'
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(224): warning C4716: 'readFromBinFile': must return a value
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(249): warning C4715: 'transformStudentArray': not all control paths return a value
-  Adv_C_Exe4.vcxproj -> C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Debug\Adv_C_Exe4.exe
+﻿  Adv_C_Exe4.vcxproj -> C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Debug\Adv_C_Exe4.exe
