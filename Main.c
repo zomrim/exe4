@@ -28,7 +28,7 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 void printStudentArray(const char* const* const* students, const int* coursesPerStudent, int numberOfStudents);
 void factorGivenCourse(char** const* students, const int* coursesPerStudent, int numberOfStudents, const char* courseName, int factor);
 void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStudents);
-int* countRowTavs(char* fileName, int arr_size);
+int* countRowTavs(char* buffer, int arr_size);
 
 //Part B
 Student* transformStudentArray(char*** students, const int* coursesPerStudent, int numberOfStudents);
@@ -74,14 +74,15 @@ void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int*
 	
 	int* courses = (int*)malloc(sizeof(int) * student_cnt);
 	if (!courses) { exit(1); }
+	int** coursesPtr = courses;
 	rewind(fin);
 	int i = 0;
 	while (feof(fin) == 0)
 	{
 		char str[1023];
 		int res = countPipes (fgets(str, 1023, fin),1023);
-		courses[i] = res;
-		i++;
+		*coursesPtr = res;
+		coursesPtr++;
 	}
 	*coursesPerStudent = courses;
 	fclose(fin);
@@ -108,35 +109,40 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 {
 	FILE* fin = fopen(fileName, "r");
 	countStudentsAndCourses(fileName, coursesPerStudent, numberOfStudents);
+	int* coursesPtr = *coursesPerStudent;
 	char*** students = (char***)malloc(sizeof(char**) * (*numberOfStudents));
 	if (!students) { exit(1); }
+	int*** studentsPtr = students;
 	for (int i = 0; i < (*numberOfStudents); i++)
 	{
-		int iter = (**coursesPerStudent) * 2 + 1;
+		int iter = (*coursesPtr) * 2 + 1;
 		char** student = (char**)malloc(sizeof(char*) * iter);
 		if (!student) { exit(1); }
-		*students = student;
-		int* sizes = countRowTavs(fileName, iter);
-		char* name = (char*)malloc(sizeof(char) * (sizes[0]));
+		char** studentPtr = student;
+		*studentsPtr = student;
+		char line[1023];
+		fgets(line, 1023, fin);
+		int* sizes = countRowTavs(line, iter);
+		int* sizesPtr = sizes;
+		char* name = (char*)malloc(sizeof(char) * (*sizesPtr));
 		if (!name) { exit(1); }
-		*student = name;
-		rewind(fin);
-		fgets(name, sizes[0], fin);
-		student++;
-		sizes++;
+		*studentPtr = name;
+		studentPtr++;
+		fgets(name, *sizesPtr, fin);
 		fseek(fin, 1, SEEK_CUR);
-		for (int i = 0; i < iter; i++)
+		sizesPtr++;
+		for (int j = 1; j < iter; j++)
 		{
-			char* data = (char*)malloc(sizeof(char) * (sizes[i]));
+			char* data = (char*)malloc(sizeof(char) * (*sizesPtr));
 			if (!data) { exit(1); }
-			*student = data;
-			fgets(data, sizes[i], fin);
-			student++;
-			sizes++;
+			*studentPtr = data;
+			fgets(data, *sizesPtr, fin);
 			fseek(fin, 1, SEEK_CUR);
+			studentPtr++;
+			sizesPtr++;
 		}
-		students++;
-		coursesPerStudent++;
+		coursesPtr++;
+		studentsPtr++;
 	}
 	return students;
 }
@@ -241,30 +247,27 @@ Student* transformStudentArray(char*** students, const int* coursesPerStudent, i
 	}
 }
 
-int* countRowTavs(char* fileName, int arr_size)
+int* countRowTavs(char* buffer, int arr_size)
 {
 	int* sizes = (int*)malloc(sizeof(int) * arr_size);
-	FILE* fin = fopen(fileName, "r");
+	int* sizesPtr = sizes;
 	int counter = 0;
-	char line[1023];
-	fgets(line, 1023, fin);
-	char* ptr = line;
+	char* ptrline = buffer;
 	int i = 0;
-	while (*ptr != '\0') 
+	while (*ptrline != '\0')
 	{
-		while (*ptr != '|' && *ptr != ',')
+		while (*ptrline != '|' && *ptrline != ',')
 		{
-			if (*ptr == '\n')
+			if (*ptrline == '\n')
 				break;
 			counter++;
-			ptr++;
+			ptrline++;
 		}
-		sizes[i] = counter + 1;
-		ptr++;
-		i++;
+		*sizesPtr = counter + 1;
+		ptrline++;
+		sizesPtr++;
 		counter = 0;
 	}
-	fclose(fin);
 	return sizes;
 	}
 	
