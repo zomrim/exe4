@@ -62,7 +62,7 @@ int main()
 
 void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int* numberOfStudents)
 {
-	FILE* fin =	fopen(fileName, "r");
+	FILE* fin = fopen(fileName, "r");
 	int student_cnt = 1;
 	rewind(fin);
 	while (feof(fin) == 0)
@@ -71,7 +71,7 @@ void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int*
 			student_cnt++;
 	}
 	*numberOfStudents = student_cnt;
-	
+
 	int* courses = (int*)malloc(sizeof(int) * student_cnt);
 	if (!courses) { exit(1); }
 	int** coursesPtr = courses;
@@ -80,7 +80,7 @@ void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int*
 	while (feof(fin) == 0)
 	{
 		char str[1023];
-		int res = countPipes (fgets(str, 1023, fin),1023);
+		int res = countPipes(fgets(str, 1023, fin), 1023);
 		*coursesPtr = res;
 		coursesPtr++;
 	}
@@ -128,16 +128,17 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 		if (!name) { exit(1); }
 		*studentPtr = name;
 		studentPtr++;
-		fgets(name, *sizesPtr, fin);
-		fseek(fin, 1, SEEK_CUR);
+		char* buffer = strtok(line, "|,");
+		strcpy(name,buffer);
+		buffer = strtok(NULL, "|,");
 		sizesPtr++;
-		for (int j = 1; j < iter; j++)
+		for (int j = 0; j < (*coursesPtr) * 2; j++)
 		{
 			char* data = (char*)malloc(sizeof(char) * (*sizesPtr));
 			if (!data) { exit(1); }
 			*studentPtr = data;
-			fgets(data, *sizesPtr, fin);
-			fseek(fin, 1, SEEK_CUR);
+			strcpy(data, buffer);
+			buffer = strtok(NULL, "|,");
 			studentPtr++;
 			sizesPtr++;
 		}
@@ -154,7 +155,7 @@ void factorGivenCourse(char** const* students, const int* coursesPerStudent, int
 
 	for (int i = 0; i < numberOfStudents; i++)
 	{
-		for (int i = 0; i < (*coursesPerStudent) * 2 + 1 ; i++)
+		for (int i = 0; i < (*coursesPerStudent) * 2 + 1; i++)
 		{
 			if (**students == courseName)
 			{
@@ -208,7 +209,7 @@ void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStuden
 	free(*students);
 	free(students);
 	free(coursesPerStudent);
-	
+
 	fclose(fin);
 }
 
@@ -269,6 +270,5 @@ int* countRowTavs(char* buffer, int arr_size)
 		counter = 0;
 	}
 	return sizes;
-	}
-	
+}
 
