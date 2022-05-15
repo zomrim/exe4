@@ -42,7 +42,7 @@ int main()
 	char*** students = makeStudentArrayFromFile("studentList.txt", &coursesPerStudent, &numberOfStudents);
 	factorGivenCourse(students, coursesPerStudent, numberOfStudents, "Advanced Topics in C", +5);
 	printStudentArray(students, coursesPerStudent, numberOfStudents);
-	studentsToFile(students, coursesPerStudent, numberOfStudents); //this frees all memory. Part B fails if this line runs. uncomment for testing (and comment out Part B)
+	//studentsToFile(students, coursesPerStudent, numberOfStudents); //this frees all memory. Part B fails if this line runs. uncomment for testing (and comment out Part B)
 
 	//Part B
 	Student* transformedStudents = transformStudentArray(students, coursesPerStudent, numberOfStudents);
@@ -236,27 +236,38 @@ Student* readFromBinFile(const char* fileName)
 
 Student* transformStudentArray(char*** students, const int* coursesPerStudent, int numberOfStudents)
 {
-	Student* students_structs = (Student*)malloc(sizeof(Student) * numberOfStudents);
-	if (!students_structs) { exit(1); }
+	Student* students_arr = (Student*)malloc(sizeof(Student) * numberOfStudents);
+	if (!students_arr) { exit(1); }
+	Student* arr_ptr = students_arr;
+	char*** studentsPtr = students;
+	int* coursesNum = coursesPerStudent;
 	for (int i = 0; i < numberOfStudents; i++)
 	{
+		char** studentdata = *studentsPtr;
 		Student s;
-		strcpy(s.name, **students);
-		*students++;
-		s.numberOfCourses = *coursesPerStudent;
-		StudentCourseGrade* courses = (StudentCourseGrade*)malloc(sizeof(StudentCourseGrade) * (*coursesPerStudent));
-		for (int i = 0; i < *coursesPerStudent; i++)
+		strcpy(s.name, *studentdata);
+		studentdata++;
+		s.numberOfCourses = *coursesNum;
+		StudentCourseGrade* courses = (StudentCourseGrade*)malloc(sizeof(StudentCourseGrade) * (*coursesNum));
+		if (!courses) { exit(1); }
+		StudentCourseGrade* coursesPtr = courses;
+		for (int j = 0; j < *coursesNum; j++)
 		{
 			StudentCourseGrade course;
-			strcpy(course.courseName, **students);
-			*students++;
-			course.grade = atoi(**students);
-			*students++;
-			courses[i] = course;
+			strcpy(course.courseName, *studentdata);
+			studentdata++;
+			course.grade = atoi(*studentdata);
+			studentdata++;
+			*coursesPtr = course;
+			coursesPtr++;
 		}
-		coursesPerStudent++;
-		students++;
+		s.grades = courses;
+		*arr_ptr = s;
+		arr_ptr++;
+		coursesNum++;
+		studentsPtr++;
 	}
+	return students_arr;
 }
 
 int* countRowTavs(char* buffer, int arr_size)
