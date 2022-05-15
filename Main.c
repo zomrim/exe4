@@ -20,7 +20,7 @@ typedef struct Student
 	int numberOfCourses;
 }Student;
 
-
+//שתוש יא מניאק
 //Part A
 void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int* numberOfStudents);
 int countPipes(const char* lineBuffer, int maxCount);
@@ -43,7 +43,7 @@ int main()
 	char*** students = makeStudentArrayFromFile("studentList.txt", &coursesPerStudent, &numberOfStudents);
 	factorGivenCourse(students, coursesPerStudent, numberOfStudents, "Advanced Topics in C", +5);
 	printStudentArray(students, coursesPerStudent, numberOfStudents);
-	//studentsToFile(students, coursesPerStudent, numberOfStudents); //this frees all memory. Part B fails if this line runs. uncomment for testing (and comment out Part B)
+	studentsToFile(students, coursesPerStudent, numberOfStudents); //this frees all memory. Part B fails if this line runs. uncomment for testing (and comment out Part B)
 
 	//Part B
 	Student* transformedStudents = transformStudentArray(students, coursesPerStudent, numberOfStudents);
@@ -128,7 +128,7 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 		*studentPtr = name;
 		studentPtr++;
 		char* buffer = strtok(line, "|,\n");
-		strcpy(name,buffer);
+		strcpy(name, buffer);
 		buffer = strtok(NULL, "|,\n");
 		sizesPtr++;
 		for (int j = 0; j < (*coursesPtr) * 2; j++)
@@ -159,7 +159,7 @@ void factorGivenCourse(char** const* students, const int* coursesPerStudent, int
 		char** dataPtr = *students;
 		for (int j = 0; j < (*coursesPerStudent) * 2 + 1; j++)
 		{
-			if (strcmp(*dataPtr,courseName) == 0)
+			if (strcmp(*dataPtr, courseName) == 0)
 			{
 				dataPtr++;
 				int grade = atoi(*dataPtr);
@@ -169,7 +169,8 @@ void factorGivenCourse(char** const* students, const int* coursesPerStudent, int
 				if (grade <= 0)
 					grade = 0;
 				_itoa(grade, *dataPtr, 10);
-			} else dataPtr++;
+			}
+			else dataPtr++;
 		}
 		coursesPerStudent++;
 		students++;
@@ -193,27 +194,34 @@ void printStudentArray(const char* const* const* students, const int* coursesPer
 void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStudents)
 {
 	FILE* fin = fopen("studentList.txt", "w");
+	//מצביעים חדשים 
+	char*** studentsPtr = students;
+	int* courses = coursesPerStudent;
 
-	for (int i = 0; i < numberOfStudents; i++)
+	for (int i = 0; i < numberOfStudents; i++)// רץ על מערך הסטודנטים
 	{
-		fputs(**students, fin);
-		for (int i = 0; i < *coursesPerStudent; i++)
+		char** studentData = *studentsPtr;
+		fputs(*studentData, fin);
+		free(*studentData);
+
+		for (int j = 0; j < *courses; j++)//רץ על המידע של כל סטודנט 
 		{
-			*students++;
+			studentData++;
 			fputc('|', fin);
-			fputs(**students, fin);
-			*students++;
+			fputs(*studentData, fin);
+			free(*studentData);
+			studentData++;
 			fputc(',', fin);
-			fputs(**students, fin);
+			fputs(*studentData, fin);
+			free(*studentData);//שחרור זכרון
 		}
-		students++;
-		coursesPerStudent++;
+		free(*studentsPtr);
+
+		studentsPtr++;
+		courses++;
+
 		fputc('\n', fin);
 	}
-	free(**students);
-	free(*students);
-	free(students);
-	free(coursesPerStudent);
 
 	fclose(fin);
 }
@@ -225,6 +233,7 @@ void writeToBinFile(const char* fileName, Student* students, int numberOfStudent
 
 Student* readFromBinFile(const char* fileName)
 {
+	printf("hello \n");
 	//add code here
 }
 
