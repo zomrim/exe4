@@ -61,6 +61,7 @@ int main()
 void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int* numberOfStudents)
 {
 	FILE* fin = fopen(fileName, "r");
+	if (!fin) printf("Unable to open file!");
 	int student_cnt = 1;
 	rewind(fin);
 	while (feof(fin) == 0)
@@ -106,6 +107,7 @@ int countPipes(const char* lineBuffer, int maxCount)
 char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, int* numberOfStudents)
 {
 	FILE* fin = fopen(fileName, "r");
+	if (!fin) printf("Unable to open file!");
 	countStudentsAndCourses(fileName, coursesPerStudent, numberOfStudents);
 	int* coursesPtr = *coursesPerStudent;
 	char*** students = (char***)malloc(sizeof(char**) * (*numberOfStudents));
@@ -193,9 +195,9 @@ void printStudentArray(const char* const* const* students, const int* coursesPer
 void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStudents)
 {
 	FILE* fin = fopen("studentList.txt", "w");
+	if (!fin) printf("Unable to open file!");
 	char*** studentsPtr = students;
 	int* courses = coursesPerStudent;
-
 	for (int i = 0; i < numberOfStudents; i++)
 	{
 		char** studentData = *studentsPtr;
@@ -220,7 +222,6 @@ void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStuden
 
 		fputc('\n', fin);
 	}
-
 	fclose(fin);
 }
 
@@ -248,7 +249,33 @@ void writeToBinFile(const char* fileName, Student* students, int numberOfStudent
 
 Student* readFromBinFile(const char* fileName)
 {
-	//add code here
+	FILE* fin = fopen(fileName, "rb");
+	if (!fin) printf("Unable to open file!");
+	int numOfStudent; 
+	fread(&numOfStudent, sizeof(int), 1, fin);
+	Student* students = (Student*)malloc(sizeof(Student) * numOfStudent);
+	if (!students) { exit(1); }
+	Student* studentsPtr = students;
+	for (int i = 0; i < numOfStudent; i++)
+	{
+		Student s; 
+		fread((s.name), sizeof(char), 35, fin);
+		fread(&(s.numberOfCourses), sizeof(int), 1, fin);
+		StudentCourseGrade* courses = (StudentCourseGrade*)malloc(sizeof(StudentCourseGrade) * s.numberOfCourses);
+		if (!courses) { exit(1); }
+		StudentCourseGrade* coursesPtr = courses;
+		for (int j = 0; j < s.numberOfCourses; j++)
+		{
+			fread((coursesPtr->courseName), sizeof(char), 35, fin);
+			fread(&(coursesPtr->grade), sizeof(int), 1, fin);
+			coursesPtr++;
+		}
+		s.grades = courses;
+		*studentsPtr = s;
+		studentsPtr++;
+	}
+	fclose(fin);
+	return students;
 }
 
 Student* transformStudentArray(char*** students, const int* coursesPerStudent, int numberOfStudents)
