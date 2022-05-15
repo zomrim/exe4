@@ -20,7 +20,6 @@ typedef struct Student
 	int numberOfCourses;
 }Student;
 
-//שתוש יא מניאק
 //Part A
 void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int* numberOfStudents);
 int countPipes(const char* lineBuffer, int maxCount);
@@ -194,17 +193,16 @@ void printStudentArray(const char* const* const* students, const int* coursesPer
 void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStudents)
 {
 	FILE* fin = fopen("studentList.txt", "w");
-	//מצביעים חדשים 
 	char*** studentsPtr = students;
 	int* courses = coursesPerStudent;
 
-	for (int i = 0; i < numberOfStudents; i++)// רץ על מערך הסטודנטים
+	for (int i = 0; i < numberOfStudents; i++)
 	{
 		char** studentData = *studentsPtr;
 		fputs(*studentData, fin);
 		free(*studentData);
 
-		for (int j = 0; j < *courses; j++)//רץ על המידע של כל סטודנט 
+		for (int j = 0; j < *courses; j++)
 		{
 			studentData++;
 			fputc('|', fin);
@@ -213,7 +211,7 @@ void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStuden
 			studentData++;
 			fputc(',', fin);
 			fputs(*studentData, fin);
-			free(*studentData);//שחרור זכרון
+			free(*studentData);
 		}
 		free(*studentsPtr);
 
@@ -233,7 +231,6 @@ void writeToBinFile(const char* fileName, Student* students, int numberOfStudent
 
 Student* readFromBinFile(const char* fileName)
 {
-	printf("hello \n");
 	//add code here
 }
 

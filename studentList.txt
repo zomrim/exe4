@@ -6,4 +6,4 @@ Erez|Digital Systems,76
 Shalom|Algorithms,100|Complex Functions,80|Data Structures,87
 Ronit|Data Structures,99
 Yehuda|Complexity Theory,88
-Vardit|Com16:37 ‏15/‏05/‏2022plex Functions,76
+Vardit|Complex Functions,76
