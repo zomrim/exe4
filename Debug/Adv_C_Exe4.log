@@ -4,6 +4,6 @@ C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(75,1): warning C4047: 'initia
 C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(120,25): warning C4133: '=': incompatible types - from 'char **' to 'int **'
 C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(113,1): warning C4133: 'initializing': incompatible types - from 'char ***' to 'int ***'
 C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(155,1): warning C4090: 'initializing': different 'const' qualifiers
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(243,1): warning C4090: 'initializing': different 'const' qualifiers
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(235): warning C4716: 'readFromBinFile': must return a value
+C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(260,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(252): warning C4716: 'readFromBinFile': must return a value
   Adv_C_Exe4.vcxproj -> C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Debug\Adv_C_Exe4.exe

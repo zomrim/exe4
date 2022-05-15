@@ -226,7 +226,24 @@ void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStuden
 
 void writeToBinFile(const char* fileName, Student* students, int numberOfStudents)
 {
-	//add code here
+	FILE* fin = fopen(fileName, "wb");
+	if (!fin) printf("Unable to open file!");
+	fwrite(&numberOfStudents, sizeof(int), 1, fin);
+	Student* studentsPtr = students;
+	for (int i = 0; i < numberOfStudents; i++)
+	{
+		StudentCourseGrade* coursesPtr = studentsPtr->grades;
+		fwrite(studentsPtr->name, sizeof(char), 35, fin);
+		fwrite(&(studentsPtr->numberOfCourses), sizeof(int), 1, fin);
+		for (int j = 0; j < studentsPtr->numberOfCourses; j++)
+		{
+			fwrite(coursesPtr->courseName, sizeof(char), 35, fin);
+			fwrite(&(coursesPtr->grade), sizeof(int), 1, fin);
+			coursesPtr++;
+		}
+		studentsPtr++;
+	}
+	fclose(fin);
 }
 
 Student* readFromBinFile(const char* fileName)
