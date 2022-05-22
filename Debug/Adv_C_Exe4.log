@@ -1,8 +1,8 @@
 ﻿  Main.c
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(83,20): warning C4047: '=': 'int *' differs in levels of indirection from 'int'
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(76,1): warning C4047: 'initializing': 'int **' differs in levels of indirection from 'int *'
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(122,25): warning C4133: '=': incompatible types - from 'char **' to 'int **'
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(115,1): warning C4133: 'initializing': incompatible types - from 'char ***' to 'int ***'
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(157,1): warning C4090: 'initializing': different 'const' qualifiers
-C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(287,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(85,20): warning C4047: '=': 'int *' differs in levels of indirection from 'int'
+C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(78,1): warning C4047: 'initializing': 'int **' differs in levels of indirection from 'int *'
+C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(124,25): warning C4133: '=': incompatible types - from 'char **' to 'int **'
+C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(117,1): warning C4133: 'initializing': incompatible types - from 'char ***' to 'int ***'
+C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(159,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Main.c(292,1): warning C4090: 'initializing': different 'const' qualifiers
   Adv_C_Exe4.vcxproj -> C:\Users\Omrih\source\repos\Adv_C_Exe4\exe4\Debug\Adv_C_Exe4.exe
