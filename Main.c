@@ -66,7 +66,7 @@ void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int*
 	if (!fin) printf("Unable to open file!");
 	int student_cnt = 1;
 	rewind(fin);
-	while (feof(fin) == 0)
+	while (feof(fin) == 0)//check how many student in file by counting the '\n'
 	{
 		if (getc(fin) == '\n')
 			student_cnt++;
@@ -78,7 +78,7 @@ void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int*
 	int** coursesPtr = courses;
 	rewind(fin);
 	int i = 0;
-	while (feof(fin) == 0)
+	while (feof(fin) == 0)//use countPipes func to count how many courses for each student
 	{
 		char str[1023];
 		int res = countPipes(fgets(str, 1023, fin), 1023);
@@ -96,7 +96,7 @@ int countPipes(const char* lineBuffer, int maxCount)
 	if (maxCount <= 0)
 		return 0;
 	int counter = 0;
-	for (int i = 0; i < maxCount && *lineBuffer != '\0'; i++)
+	for (int i = 0; i < maxCount && *lineBuffer != '\0'; i++)//the func will count how many pipes in string
 	{
 		if (*lineBuffer == '|')
 			counter++;
@@ -110,15 +110,15 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 {
 	FILE* fin = fopen(fileName, "r");
 	if (!fin) printf("Unable to open file!");
-	countStudentsAndCourses(fileName, coursesPerStudent, numberOfStudents);
+	countStudentsAndCourses(fileName, coursesPerStudent, numberOfStudents);// use countStudentsAndCourses func to get num of students and their num of courses
 	int* coursesPtr = *coursesPerStudent;
-	char*** students = (char***)malloc(sizeof(char**) * (*numberOfStudents));
+	char*** students = (char***)malloc(sizeof(char**) * (*numberOfStudents));//allocate students array
 	if (!students) { exit(1); }
 	int*** studentsPtr = students;
 	for (int i = 0; i < (*numberOfStudents); i++)
 	{
-		int iter = (*coursesPtr) * 2 + 1;
-		char** student = (char**)malloc(sizeof(char*) * iter);
+		int iter = (*coursesPtr) * 2 + 1; //num of strings in each iteration
+		char** student = (char**)malloc(sizeof(char*) * iter);//allocate one student array
 		if (!student) { exit(1); }
 		char** studentPtr = student;
 		*studentsPtr = student;
@@ -126,7 +126,7 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 		fgets(line, 1023, fin);
 		int* sizes = countRowTavs(line, iter);
 		int* sizesPtr = sizes;
-		char* name = (char*)malloc(sizeof(char) * (*sizesPtr));
+		char* name = (char*)malloc(sizeof(char) * (*sizesPtr)); // allocate and copy name string
 		if (!name) { exit(1); }
 		*studentPtr = name;
 		studentPtr++;
@@ -134,7 +134,7 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 		strcpy(name, buffer);
 		buffer = strtok(NULL, "|,\n");
 		sizesPtr++;
-		for (int j = 0; j < (*coursesPtr) * 2; j++)
+		for (int j = 0; j < (*coursesPtr) * 2; j++)//allocate and copy courses names and their grades
 		{
 			char* data = (char*)malloc(sizeof(char) * (*sizesPtr));
 			if (!data) { exit(1); }
@@ -153,23 +153,23 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 
 void factorGivenCourse(char** const* students, const int* coursesPerStudent, int numberOfStudents, const char* courseName, int factor)
 {
-	if (factor > 20 || factor < -20)
+	if (factor > 20 || factor < -20)//case when factor is illegal
 		return;
 
 	int* coursesperStudentPtr = coursesPerStudent;
-	for (int i = 0; i < numberOfStudents; i++)
+	for (int i = 0; i < numberOfStudents; i++)//to check all students
 	{
 		char** dataPtr = *students;
-		for (int j = 0; j < (*coursesPerStudent) * 2 + 1; j++)
+		for (int j = 0; j < (*coursesPerStudent) * 2 + 1; j++)//to check all students strings
 		{
-			if (strcmp(*dataPtr, courseName) == 0)
+			if (strcmp(*dataPtr, courseName) == 0)//case the course found
 			{
 				dataPtr++;
 				int grade = atoi(*dataPtr);
 				grade += factor;
-				if (grade >= 100)
+				if (grade >= 100)//case grade greater 100
 					grade = 100;
-				if (grade <= 0)
+				if (grade <= 0)//case grade lower 0
 					grade = 0;
 				_itoa(grade, *dataPtr, 10);
 			}
@@ -200,13 +200,13 @@ void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStuden
 	if (!fin) printf("Unable to open file!");
 	char*** studentsPtr = students;
 	int* courses = coursesPerStudent;
-	for (int i = 0; i < numberOfStudents; i++)
+	for (int i = 0; i < numberOfStudents; i++)//for each row - each student
 	{
 		char** studentData = *studentsPtr;
 		fputs(*studentData, fin);
 		free(*studentData);
 
-		for (int j = 0; j < *courses; j++)
+		for (int j = 0; j < *courses; j++)//for each course
 		{
 			studentData++;
 			fputc('|', fin);
@@ -232,9 +232,9 @@ void writeToBinFile(const char* fileName, Student* students, int numberOfStudent
 {
 	FILE* fin = fopen(fileName, "wb");
 	if (!fin) printf("Unable to open file!");
-	fwrite(&numberOfStudents, sizeof(int), 1, fin);
+	fwrite(&numberOfStudents, sizeof(int), 1, fin);//write to file number of students
 	Student* studentsPtr = students;
-	for (int i = 0; i < numberOfStudents; i++)
+	for (int i = 0; i < numberOfStudents; i++)//write to file all students
 	{
 		StudentCourseGrade* coursesPtr = studentsPtr->grades;
 		fwrite(studentsPtr->name, sizeof(char), 35, fin);
@@ -255,11 +255,11 @@ Student* readFromBinFile(const char* fileName)
 	FILE* fin = fopen(fileName, "rb");
 	if (!fin) printf("Unable to open file!");
 	int numOfStudent; 
-	fread(&numOfStudent, sizeof(int), 1, fin);
+	fread(&numOfStudent, sizeof(int), 1, fin);//read the first 4 bytes - the num of students
 	Student* students = (Student*)malloc(sizeof(Student) * numOfStudent);
 	if (!students) { exit(1); }
 	Student* studentsPtr = students;
-	for (int i = 0; i < numOfStudent; i++)
+	for (int i = 0; i < numOfStudent; i++)//fill array of students by fill struct by struct
 	{
 		Student s; 
 		fread((s.name), sizeof(char), 35, fin);
@@ -317,7 +317,7 @@ Student* transformStudentArray(char*** students, const int* coursesPerStudent, i
 	return students_arr;
 }
 
-int* countRowTavs(char* buffer, int arr_size)
+int* countRowTavs(char* buffer, int arr_size)//the func returns the sizes of strings seperated by '|' or ',' separate in buffer 
 {
 	int* sizes = (int*)malloc(sizeof(int) * arr_size);
 	int* sizesPtr = sizes;
@@ -341,7 +341,7 @@ int* countRowTavs(char* buffer, int arr_size)
 	return sizes;
 }
 
-freeStudents(Student* students, int numberOfStudents)
+freeStudents(Student* students, int numberOfStudents)//the func free memory of students array
 {
 	Student* studentsPtr = students;
 	for (int i = 0; i < numberOfStudents; i++)
